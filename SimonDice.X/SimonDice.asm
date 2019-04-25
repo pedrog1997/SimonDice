@@ -1,14 +1,40 @@
-; TODO INSERT CONFIG CODE HERE USING CONFIG BITS GENERATOR
+    RADIX DEC ; SET DECIMAL AS DEFAULT BASE 
+    PROCESSOR 18F45K50 ; SET PROCESSOR TYPE 
+    #INCLUDE <P18F45K50.INC> 
+; 
+;
+; VARIABLE'S DEFINITION SECTION 
+; 
+; * ONLY NEEDED FOR SOFTWARE SIMULATION * 
+; 
+    org 0x00 ; RESET VECTOR 
+    goto 0X1000 
+; 
+    org 0X08 ; HIGH INTERRUPT VECTOR 
+    goto 0X1008 
+; 
+    org 0X18 ; LOW INTERRUPT VECTOR 
+    goto 0X1018 
+; 
+; * END OF CODE FOR SOFTWARE SIMULATION * 
+; 
+; 
+; * START OF PROGRAM * 
+; JUMP VECTORS 
+; 
+    org 0X1000 ; RESET VECTOR 
+    goto main
+    org 0X1008 ; HIGH INTERRUPT VECTOR 
+    ;goto isrHigh ; UNCOMMENT WHEN NEEDED 
+    org 0X1018 ; LOW INTERRUPT VECTOR 
+    ;goto isrLow ; UNCOMMENT WHEN NEEDED 
 
-RES_VECT  CODE    0x0000            ; processor reset vector
-    GOTO    START                   ; go to beginning of program
-
-; TODO ADD INTERRUPTS HERE IF USED
-
-MAIN_PROG CODE                      ; let linker place main program
-
-START
-
-    GOTO $                          ; loop forever
-
-    END
+; 
+; RESOURCE INITIALIZATION 
+; 
+main:
+    
+    
+loop:
+    
+    end
