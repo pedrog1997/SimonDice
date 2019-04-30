@@ -47,8 +47,140 @@ main:
     
     
 loop:
+    call loadEEPROM
+    call configT2
+    call menuLCD
     
 loadEEPROM:
+    movlw 0
+    movwf EEADR, A	    ; 0x00 Primera secuencia
+    movlw 8
+    movwf EEDATA, A
+    movlw b'00000100'
+    movwf EECON1, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x01
+    movlw 4
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x02
+    movlw 2
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x03
+    movlw 4
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x04
+    movlw 2
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x05
+    movlw 4
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x06
+    movlw 8
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x07
+    movlw 4
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x08
+    movlw 8
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x09
+    movlw 1
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x0A Segunda secuencia
+    movlw 2
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x0B
+    movlw 4
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x0C
+    movlw 8
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x0D
+    movlw 1
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x0E
+    movlw 2
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x0F
+    movlw 1
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x10
+    movlw 2
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x11
+    movlw 1
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x12
+    movlw 8
+    movwf EEDATA, A
+    bsf EECON1, WR, A
+    call waitwrite
+    
+    incf EEADR, A	    ; 0x13
+    movlw 4
+    bsf EECON1, WR, A
+    call waitwrite
+    	
+    bcf EECON1, WREN, A
+    
+waitwrite:
+    btfsc EECON1, WR, A
+	goto waitwrite
+    return
+
     
 menuLCD:
     
@@ -64,7 +196,7 @@ incorr:
     
 corr:
     
-puntaje:
+puntajeLCD:
     
     
     
