@@ -14,6 +14,8 @@ address EQU 0x41
 comparador EQU 0x42
 flag EQU 0x43
 bitf EQU 0
+DCounter1 EQU 0X0C
+DCounter2 EQU 0X0D
     
     ; Code for software simulation
     org 0x00	    ; Reset vector 
@@ -76,9 +78,8 @@ main:
     
 loop:
     call loadEEPROM
-    ;call configT2
+    call configT2
     call menuLCD
-    call masterloop
 here goto here
     
 loadEEPROM:
@@ -288,6 +289,15 @@ menuLCD:
     movwf LCDData, A
     call sendLCD
     
+check1:
+    movlw b'11101111'
+    movwf LATB, A
+    btfss PORTB, 3, A
+	goto jugar
+    movlw b'11011111'
+    btfss PORTB, 3, A
+	goto puntajeLCD
+    goto check1
     return
     
     
@@ -312,13 +322,33 @@ waitLCD:
     return
     
 configT2:
+    clrf T2CON, A
+    bsf T2CON, TMR2ON, A
+    return
     
 jugar:
+    call delay
+    btfss PORTB, 3, A
+	goto jugar
+    
+    btfss TMR2, 0, A
+	goto sec1
+    movlw 0x0A 
+    movwf indice, A
+    movwf address, A
+    goto clc
+sec1 
+    clrf indice, A
+    clrf address, A
+clc
+    clrf puntaje, A
+    goto masterloop
     
 masterloop:
-    movlw 0
+    movlw 0xFF
     movwf iterator
 loop1: 
+    incf iterator, F, A
     movf indice, W, A	
     addwf iterator, W, A
     movwf EEADR
@@ -329,26 +359,24 @@ loop1:
     movwf LATA, A
     call delay1
     clrf LATA, A
-    incf iterator, F, A
     movf puntaje, W, A
     subwf iterator, W, A
     btfss STATUS, Z, A
 	call loop1
     movf indice, W, A
     movwf address
-    movlw 0
+    movlw 0xFF
     movwf iterator
 loop2:
     ;lectura del teclado
+    incf iterator, F, A
     bcf flag,bitf,A
     ;guardar primer numero
 Num:
     call ckc1
     btfss flag,bitf,A
 	goto Num
-    call delay1
     bcf flag, bitf, A
-    movwf comparador, A
     movf indice, W, A
     addwf iterator, W, A
     movwf EEADR
@@ -358,11 +386,10 @@ Num:
     movf EEDATA, W, A
     cpfseq comparador, A
 	goto incorr
-    incf iterator, F, A
     movf puntaje, W, A
     subwf iterator, W, A
     btfss STATUS, Z, A
-	call Num
+	call loop2
     call corr
 		
 ;teclado
@@ -421,6 +448,7 @@ ckc4:
 uno:
     bsf flag,bitf,A
     movlw .1
+    movwf comparador, A
     movwf LATA, A
     call delay1
     clrf LATA, A
@@ -429,6 +457,7 @@ uno:
 dos:
     bsf flag,bitf,A
     movlw .2
+    movwf comparador, A
     movwf LATA,A
     call delay1
     clrf LATA, A
@@ -437,6 +466,7 @@ dos:
 cuatro:
     bsf flag,bitf,A
     movlw .4
+    movwf comparador, A
     movwf LATA,A
     call delay1
     clrf LATA, A
@@ -445,6 +475,7 @@ cuatro:
 ocho:
     bsf flag,bitf,A
     movlw .8
+    movwf comparador, A
     movwf LATA,A
     call delay1
     clrf LATA, A
@@ -555,6 +586,9 @@ puntajeLCD:
     andwf maxP, W, A
     movff WREG, NUM
     call displayNum		; Dígito menos significativo
+    
+    goto here
+    
     return
     
 add6:
@@ -698,6 +732,18 @@ rutDel3 call rutDel2
     incf 0x3A,F,A
     btfss STATUS,2
 	goto rutDel3
-	return
+    return
+	
+delay:
+    movlw 0xe3
+    movwf DCounter1
+    movlw 0X68
+    movwf DCounter2
+loopdelay
+    decfsz DCounter1, 1
+    goto loopdelay
+    decfsz DCounter2, 1
+    goto loopdelay
+    return
     
     end

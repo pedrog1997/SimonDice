@@ -1,5 +1,5 @@
 MPLINK 5.09, LINKER
-Linker Map File - Created Wed May 01 17:56:40 2019
+Linker Map File - Created Wed May 01 18:13:32 2019
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -28,17 +28,17 @@ Linker Map File - Created Wed May 01 17:56:40 2019
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                      Num   0x00129e    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                      Num   0x00129c    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                      add6   0x001466    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                    check1   0x001200    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     ckc1   0x0012d2    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     ckc2   0x0012f2    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     ckc3   0x001312    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     ckc4   0x001332    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                      clc   0x001266    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     ckc1   0x0012ca    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     ckc2   0x0012ea    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     ckc3   0x00130a    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     ckc4   0x00132a    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                      clc   0x001264    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                  configT2   0x001240    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                      corr   0x0013a2    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                   cuatro   0x00136c    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                   cuatro   0x001368    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                     delay   0x00157e    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                    delay1   0x00156c    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                  display0   0x0014c8    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
@@ -52,28 +52,28 @@ Linker Map File - Created Wed May 01 17:56:40 2019
                  display8   0x001538    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                  display9   0x001546    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                displayNum   0x00147c    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                      dos   0x00135e    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                      dos   0x001358    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                      here   0x00106a    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                    incorr   0x001388    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                     jugar   0x001246    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                loadEEPROM   0x00106e    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                      loop   0x00105e    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                    loop1   0x001270    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                    loop2   0x00129a    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                    loop1   0x00126e    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                    loop2   0x001298    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                 loopdelay   0x001586    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                      main   0x001018    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-               masterloop   0x00126c    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+               masterloop   0x00126a    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                 maxPoints   0x00146c    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                   menuLCD   0x001158    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     ocho   0x00137a    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     ocho   0x001378    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                puntajeLCD   0x0013c4    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                    rutDel   0x001554    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                   rutDel2   0x00155e    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                   rutDel3   0x001570    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     sec1   0x001262    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     sec1   0x001260    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                   sendLCD   0x001218    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
              setmaxpoints   0x0013b4    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                      uno   0x001350    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                      uno   0x001348    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                   waitLCD   0x00122c    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                 waitWrite   0x001150    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                 writeToEE   0x001140    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
@@ -95,20 +95,20 @@ Linker Map File - Created Wed May 01 17:56:40 2019
                   waitLCD   0x00122c    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                  configT2   0x001240    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                     jugar   0x001246    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     sec1   0x001262    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                      clc   0x001266    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-               masterloop   0x00126c    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                    loop1   0x001270    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                    loop2   0x00129a    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                      Num   0x00129e    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     ckc1   0x0012d2    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     ckc2   0x0012f2    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     ckc3   0x001312    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     ckc4   0x001332    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                      uno   0x001350    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                      dos   0x00135e    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                   cuatro   0x00136c    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
-                     ocho   0x00137a    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     sec1   0x001260    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                      clc   0x001264    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+               masterloop   0x00126a    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                    loop1   0x00126e    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                    loop2   0x001298    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                      Num   0x00129c    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     ckc1   0x0012ca    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     ckc2   0x0012ea    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     ckc3   0x00130a    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     ckc4   0x00132a    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                      uno   0x001348    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                      dos   0x001358    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                   cuatro   0x001368    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
+                     ocho   0x001378    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                    incorr   0x001388    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
                      corr   0x0013a2    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
              setmaxpoints   0x0013b4    program     static C:\Users\pedro\Documents\ISDR\6 semestre\Microcontroladores\Proyecto\SimonDice\SimonDice.X\SimonDice.asm
