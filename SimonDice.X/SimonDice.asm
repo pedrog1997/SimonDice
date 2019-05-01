@@ -291,7 +291,7 @@ menuLCD:
     
     
 sendLCD:
-    movff LCDConfig, LATC		; Set values for RS and RW
+    movff LCDConfig, LATC	; Set values for RS and RW
     bsf LATC, 2, A		; Set enable bit
     movff LCDData, LATD		; Load Data port
     nop
@@ -318,7 +318,7 @@ masterloop:
     movlw 0
     movwf iterator
 loop1: 
-    movf indice, W, A
+    movf indice, W, A	
     addwf iterator, W, A
     movwf EEADR
     bcf EECON1, EEPGD, A
@@ -326,11 +326,13 @@ loop1:
     bsf EECON1, RD, A
     movf EEDATA, W, A
     movwf LATA, A
-    incf iterator, A
+    call delay1
+    clrf LATA, A
+    incf iterator, F, A
     movf puntaje, W, A
     subwf iterator, W, A
     btfss STATUS, Z, A
-    call loop1
+	call loop1
     movf indice, W, A
     movwf address
     movlw 0
@@ -342,10 +344,10 @@ loop2:
 Num:
     call ckc1
     btfss flag,bitf,A
-    goto Num
+	goto Num
     call delay1
-    bcf flag,bitf,A
-    movwf comparador,A
+    bcf flag, bitf, A
+    movwf comparador, A
     movf indice, W, A
     addwf iterator, W, A
     movwf EEADR
@@ -354,12 +356,12 @@ Num:
     bsf EECON1, RD, A
     movf EEDATA, W, A
     cpfseq comparador, A
-    goto incorr
-    incf iterator, A
+	goto incorr
+    incf iterator, F, A
     movf puntaje, W, A
     subwf iterator, W, A
     btfss STATUS, Z, A
-    call Num
+	call Num
     call corr
 		
 ;teclado
@@ -418,30 +420,64 @@ ckc4:
 uno:
     bsf flag,bitf,A
     movlw .1
-    movwf LATA,A
+    movwf LATA, A
+    call delay1
+    clrf LATA, A
     return
     
 dos:
     bsf flag,bitf,A
     movlw .2
     movwf LATA,A
+    call delay1
+    clrf LATA, A
     return
     
 cuatro:
     bsf flag,bitf,A
     movlw .4
     movwf LATA,A
+    call delay1
+    clrf LATA, A
     return
     
 ocho:
     bsf flag,bitf,A
     movlw .8
     movwf LATA,A
+    call delay1
+    clrf LATA, A
     return
     
 incorr:
-    
+    movlw 0x14
+    movwf EEADR, A
+    bcf EECON1, EEPGD, A
+    bcf EECON1, CFGS, A
+    bsf EECON1, RD, A
+    movf EEDATA, W, A
+    cpfsgt puntaje, A
+	call menuLCD
+    movlw .16
+    movwf LATA
+    call setmaxpoints
+   
 corr:
+    incf puntaje, F, A
+    movlw .10
+    cpfseq puntaje, A
+	call masterloop 
+    movlw .32
+    movwf LATA
+    call setmaxpoints
+    
+setmaxpoints:
+    movlw 0x14
+    movwf EEADR
+    movf puntaje, W, A
+    movwf EEDATA, A
+    call writeToEE
+    call menuLCD
     
 puntajeLCD:
     
@@ -518,7 +554,6 @@ puntajeLCD:
     andwf maxP, W, A
     movff WREG, NUM
     call displayNum		; Dígito menos significativo
-    
     return
     
 add6:
@@ -527,7 +562,7 @@ add6:
     return
     
 maxPoints:
-    movlw 0x13
+    movlw 0x14
     movwf EEADR, A
     bcf EECON1, EEPGD, A
     bcf EECON1, CFGS, A
@@ -645,8 +680,7 @@ display9:
     movwf LCDData
     call sendLCD
     return
-    
-
+   
 rutDel incf 0x38,F,A
     btfss STATUS,2
 	goto rutDel
@@ -666,4 +700,3 @@ rutDel3 call rutDel2
 	return
     
     end
-    
