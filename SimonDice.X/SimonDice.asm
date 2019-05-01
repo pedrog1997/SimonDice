@@ -78,6 +78,7 @@ loop:
     call loadEEPROM
     ;call configT2
     call menuLCD
+    call masterloop
 here goto here
     
 loadEEPROM:
