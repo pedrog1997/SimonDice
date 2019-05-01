@@ -1,4 +1,4 @@
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE  1
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -21,211 +21,358 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00005     ; Variable definition
   00000000            00006 puntaje EQU 0x00
   00000001            00007 indice EQU 0x01
-                      00008     
-                      00009     ; Code for software simulation
-                      00010     org 0x00        ; Reset vector 
-000000 EF00 F008      00011     goto 0X1000 
-                      00012  
-                      00013     org 0X08        ; High Interrupt Vector 
-000008 EF04 F008      00014     goto 0X1008 
-                      00015  
-                      00016     org 0X18        ; Low Interrupt Vector 
-000018 EF0C F008      00017     goto 0X1018 
-                      00018     ; End of code for software simulation
-                      00019     
-                      00020     org 0X1000      ; Reset Vector 
-001000 EF?? F???      00021     goto main
-                      00022     org 0X1008      ; High Interrupt Vector 
-                      00023     ;goto isrHigh   
-                      00024     org 0X1018      ; Low Interrupt Vector 
-                      00025     ;goto isrLow
-                      00026 
-001018                00027 main:
-001018 010F           00028     movlb 15
-00101A 6B5B           00029     clrf ANSELA, BANKED
-00101C 6A92           00030     clrf TRISA, A
-00101E 6A89           00031     clrf LATA, A
-                      00032     
-001020 6B5C           00033     clrf ANSELB, BANKED
-001022 9EF1           00034     bcf INTCON2, 7, A       ; Enable global pull-up
-001024 0E0F           00035     movlw b'00001111'
-001026 6E93           00036     movwf TRISB, A
-001028 6E85           00037     movwf WPUB, A
-00102A 688A           00038     setf LATB, A
-                      00039     
-00102C 6B5D           00040     clrf ANSELC, BANKED
-00102E 6A94           00041     clrf TRISC, A
-001030 6A8B           00042     clrf LATC, A
-                      00043     
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE  2
+  00000002            00008 LCDConfig EQU 0x02
+  00000003            00009 LCDData EQU 0x03
+                      00010     
+                      00011     ; Code for software simulation
+                      00012     org 0x00        ; Reset vector 
+000000 EF00 F008      00013     goto 0X1000 
+                      00014  
+                      00015     org 0X08        ; High Interrupt Vector 
+000008 EF04 F008      00016     goto 0X1008 
+                      00017  
+                      00018     org 0X18        ; Low Interrupt Vector 
+000018 EF0C F008      00019     goto 0X1018 
+                      00020     ; End of code for software simulation
+                      00021     
+                      00022     org 0X1000      ; Reset Vector 
+001000 EF?? F???      00023     goto main
+                      00024     org 0X1008      ; High Interrupt Vector 
+                      00025     ;goto isrHigh   
+                      00026     org 0X1018      ; Low Interrupt Vector 
+                      00027     ;goto isrLow
+                      00028 
+001018                00029 main:
+001018 010F           00030     movlb 15
+00101A 6B5B           00031     clrf ANSELA, BANKED
+00101C 6A92           00032     clrf TRISA, A
+00101E 6A89           00033     clrf LATA, A
+                      00034     
+001020 6B5C           00035     clrf ANSELB, BANKED
+001022 9EF1           00036     bcf INTCON2, 7, A       ; Enable global pull-up
+001024 0E0F           00037     movlw b'00001111'
+001026 6E93           00038     movwf TRISB, A
+001028 6E85           00039     movwf WPUB, A
+00102A 688A           00040     setf LATB, A
+                      00041     
+00102C 6B5D           00042     clrf ANSELC, BANKED
+00102E 6A94           00043     clrf TRISC, A
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-001032 6B5E           00044     clrf ANSELD, BANKED
-001034 6A95           00045     clrf TRISD, A
-001036 6A8C           00046     clrf LATD, A
-                      00047     
-                      00048     
-001038                00049 loop:
-001038 EC?? F???      00050     call loadEEPROM
-00103C EC?? F???      00051     call configT2
-001040 EC?? F???      00052     call menuLCD
-                      00053     
-001044                00054 loadEEPROM:
-001044 0E00           00055     movlw 0
-001046 6EA9           00056     movwf EEADR, A          ; 0x00 Primera secuencia
-001048 0E08           00057     movlw 8
-00104A 6EA8           00058     movwf EEDATA, A
-00104C 0E04           00059     movlw b'00000100'
-00104E 6EA6           00060     movwf EECON1, A
-001050 EC?? F???      00061     call writeToEE
-                      00062     
-001054 2AA9           00063     incf EEADR, F, A        ; 0x01
-001056 0E04           00064     movlw 4
-001058 6EA8           00065     movwf EEDATA, A
-00105A EC?? F???      00066     call writeToEE
-                      00067     
-00105E 2AA9           00068     incf EEADR, F, A        ; 0x02
-001060 0E02           00069     movlw 2
-001062 6EA8           00070     movwf EEDATA, A
-001064 EC?? F???      00071     call writeToEE
-                      00072     
-001068 2AA9           00073     incf EEADR, F, A        ; 0x03
-00106A 0E04           00074     movlw 4
-00106C 6EA8           00075     movwf EEDATA, A
-00106E EC?? F???      00076     call writeToEE
-                      00077     
-001072 2AA9           00078     incf EEADR, F, A        ; 0x04
-001074 0E02           00079     movlw 2
-001076 6EA8           00080     movwf EEDATA, A
-001078 EC?? F???      00081     call writeToEE
-                      00082     
-00107C 2AA9           00083     incf EEADR, F, A        ; 0x05
-00107E 0E04           00084     movlw 4
-001080 6EA8           00085     movwf EEDATA, A
-001082 EC?? F???      00086     call writeToEE
-                      00087     
-001086 2AA9           00088     incf EEADR, F, A        ; 0x06
-001088 0E08           00089     movlw 8
-00108A 6EA8           00090     movwf EEDATA, A
-00108C EC?? F???      00091     call writeToEE
-                      00092     
-001090 2AA9           00093     incf EEADR, F, A        ; 0x07
-001092 0E04           00094     movlw 4
-001094 6EA8           00095     movwf EEDATA, A
-001096 EC?? F???      00096     call writeToEE
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE  3
+001030 6A8B           00044     clrf LATC, A
+                      00045     
+001032 6B5E           00046     clrf ANSELD, BANKED
+001034 6A95           00047     clrf TRISD, A
+001036 6A8C           00048     clrf LATD, A
+                      00049     
+001038 EC?? F???      00050     call waitLCD
+                      00051     
+00103C 6A02           00052     clrf LCDConfig                          
+00103E 0E38           00053     movlw b'00111000'               ; Function set for LCD
+001040 6E03           00054     movwf LCDData
+001042 EC?? F???      00055     call sendLCD
+                      00056     
+001046 0E06           00057     movlw b'00000110'               ; Entry mode
+001048 6E03           00058     movwf LCDData
+00104A EC?? F???      00059     call sendLCD
+                      00060     
+00104E 0E0F           00061     movlw b'00001111'               ; Display on
+001050 6E03           00062     movwf LCDData
+001052 EC?? F???      00063     call sendLCD
+                      00064     
+001056 0E01           00065     movlw b'00000001'               ; Clear display
+001058 6E03           00066     movwf LCDData
+00105A EC?? F???      00067     call sendLCD
+                      00068     
+                      00069     
+00105E                00070 loop:
+00105E EC?? F???      00071     call loadEEPROM
+                      00072     ;call configT2
+001062 EC?? F???      00073     call menuLCD
+001066 EF?? F???      00074 here goto here
+                      00075     
+00106A                00076 loadEEPROM:
+00106A 0E00           00077     movlw 0
+00106C 6EA9           00078     movwf EEADR, A          ; 0x00 Primera secuencia
+00106E 0E08           00079     movlw 8
+001070 6EA8           00080     movwf EEDATA, A
+001072 0E04           00081     movlw b'00000100'
+001074 6EA6           00082     movwf EECON1, A
+001076 EC?? F???      00083     call writeToEE
+                      00084     
+00107A 2AA9           00085     incf EEADR, F, A        ; 0x01
+00107C 0E04           00086     movlw 4
+00107E 6EA8           00087     movwf EEDATA, A
+001080 EC?? F???      00088     call writeToEE
+                      00089     
+001084 2AA9           00090     incf EEADR, F, A        ; 0x02
+001086 0E02           00091     movlw 2
+001088 6EA8           00092     movwf EEDATA, A
+00108A EC?? F???      00093     call writeToEE
+                      00094     
+00108E 2AA9           00095     incf EEADR, F, A        ; 0x03
+001090 0E04           00096     movlw 4
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00097     
-00109A 2AA9           00098     incf EEADR, F, A        ; 0x08
-00109C 0E08           00099     movlw 8
-00109E 6EA8           00100     movwf EEDATA, A
-0010A0 EC?? F???      00101     call writeToEE
-                      00102     
-0010A4 2AA9           00103     incf EEADR, F, A        ; 0x09
-0010A6 0E01           00104     movlw 1
-0010A8 6EA8           00105     movwf EEDATA, A
-0010AA EC?? F???      00106     call writeToEE
-                      00107     
-0010AE 2AA9           00108     incf EEADR, F, A        ; 0x0A Segunda secuencia
-0010B0 0E02           00109     movlw 2
-0010B2 6EA8           00110     movwf EEDATA, A
-0010B4 EC?? F???      00111     call writeToEE
-                      00112     
-0010B8 2AA9           00113     incf EEADR, F, A        ; 0x0B
-0010BA 0E04           00114     movlw 4
-0010BC 6EA8           00115     movwf EEDATA, A
-0010BE EC?? F???      00116     call writeToEE
-                      00117     
-0010C2 2AA9           00118     incf EEADR, F, A        ; 0x0C
-0010C4 0E08           00119     movlw 8
-0010C6 6EA8           00120     movwf EEDATA, A
-0010C8 EC?? F???      00121     call writeToEE
-                      00122     
-0010CC 2AA9           00123     incf EEADR, F, A        ; 0x0D
-0010CE 0E01           00124     movlw 1
-0010D0 6EA8           00125     movwf EEDATA, A
-0010D2 EC?? F???      00126     call writeToEE
-                      00127     
-0010D6 2AA9           00128     incf EEADR, F, A        ; 0x0E
-0010D8 0E02           00129     movlw 2
-0010DA 6EA8           00130     movwf EEDATA, A
-0010DC EC?? F???      00131     call writeToEE
-                      00132     
-0010E0 2AA9           00133     incf EEADR, F, A        ; 0x0F
-0010E2 0E01           00134     movlw 1
-0010E4 6EA8           00135     movwf EEDATA, A
-0010E6 EC?? F???      00136     call writeToEE
-                      00137     
-0010EA 2AA9           00138     incf EEADR, F, A        ; 0x10
-0010EC 0E02           00139     movlw 2
-0010EE 6EA8           00140     movwf EEDATA, A
-0010F0 EC?? F???      00141     call writeToEE
-                      00142     
-0010F4 2AA9           00143     incf EEADR, F, A        ; 0x11
-0010F6 0E01           00144     movlw 1
-0010F8 6EA8           00145     movwf EEDATA, A
-0010FA EC?? F???      00146     call writeToEE
-                      00147     
-0010FE 2AA9           00148     incf EEADR, F, A        ; 0x12
-001100 0E08           00149     movlw 8
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE  4
+001092 6EA8           00097     movwf EEDATA, A
+001094 EC?? F???      00098     call writeToEE
+                      00099     
+001098 2AA9           00100     incf EEADR, F, A        ; 0x04
+00109A 0E02           00101     movlw 2
+00109C 6EA8           00102     movwf EEDATA, A
+00109E EC?? F???      00103     call writeToEE
+                      00104     
+0010A2 2AA9           00105     incf EEADR, F, A        ; 0x05
+0010A4 0E04           00106     movlw 4
+0010A6 6EA8           00107     movwf EEDATA, A
+0010A8 EC?? F???      00108     call writeToEE
+                      00109     
+0010AC 2AA9           00110     incf EEADR, F, A        ; 0x06
+0010AE 0E08           00111     movlw 8
+0010B0 6EA8           00112     movwf EEDATA, A
+0010B2 EC?? F???      00113     call writeToEE
+                      00114     
+0010B6 2AA9           00115     incf EEADR, F, A        ; 0x07
+0010B8 0E04           00116     movlw 4
+0010BA 6EA8           00117     movwf EEDATA, A
+0010BC EC?? F???      00118     call writeToEE
+                      00119     
+0010C0 2AA9           00120     incf EEADR, F, A        ; 0x08
+0010C2 0E08           00121     movlw 8
+0010C4 6EA8           00122     movwf EEDATA, A
+0010C6 EC?? F???      00123     call writeToEE
+                      00124     
+0010CA 2AA9           00125     incf EEADR, F, A        ; 0x09
+0010CC 0E01           00126     movlw 1
+0010CE 6EA8           00127     movwf EEDATA, A
+0010D0 EC?? F???      00128     call writeToEE
+                      00129     
+0010D4 2AA9           00130     incf EEADR, F, A        ; 0x0A Segunda secuencia
+0010D6 0E02           00131     movlw 2
+0010D8 6EA8           00132     movwf EEDATA, A
+0010DA EC?? F???      00133     call writeToEE
+                      00134     
+0010DE 2AA9           00135     incf EEADR, F, A        ; 0x0B
+0010E0 0E04           00136     movlw 4
+0010E2 6EA8           00137     movwf EEDATA, A
+0010E4 EC?? F???      00138     call writeToEE
+                      00139     
+0010E8 2AA9           00140     incf EEADR, F, A        ; 0x0C
+0010EA 0E08           00141     movlw 8
+0010EC 6EA8           00142     movwf EEDATA, A
+0010EE EC?? F???      00143     call writeToEE
+                      00144     
+0010F2 2AA9           00145     incf EEADR, F, A        ; 0x0D
+0010F4 0E01           00146     movlw 1
+0010F6 6EA8           00147     movwf EEDATA, A
+0010F8 EC?? F???      00148     call writeToEE
+                      00149     
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-001102 6EA8           00150     movwf EEDATA, A
-001104 EC?? F???      00151     call writeToEE
-                      00152     
-001108 2AA9           00153     incf EEADR, F, A        ; 0x13
-00110A 0E04           00154     movlw 4
-00110C 6EA8           00155     movwf EEDATA, A
-00110E EC?? F???      00156     call writeToEE
-                      00157         
-001112 94A6           00158     bcf EECON1, WREN, A
+0010FC 2AA9           00150     incf EEADR, F, A        ; 0x0E
+0010FE 0E02           00151     movlw 2
+001100 6EA8           00152     movwf EEDATA, A
+001102 EC?? F???      00153     call writeToEE
+                      00154     
+001106 2AA9           00155     incf EEADR, F, A        ; 0x0F
+001108 0E01           00156     movlw 1
+00110A 6EA8           00157     movwf EEDATA, A
+00110C EC?? F???      00158     call writeToEE
                       00159     
-001114                00160 writeToEE:
-001114 0E55           00161     movlw 0x55
-001116 6EA7           00162     movwf EECON2, A
-001118 0EAA           00163     movlw 0x0AA
-00111A 6EA7           00164     movwf EECON2, A
-00111C 82A6           00165     bsf EECON1, WR, A
-00111E EC?? F???      00166     call waitWrite
-001122 0012           00167     return
-                      00168     
-001124                00169 waitWrite:
-001124 B2A6           00170     btfsc EECON1, WR, A
-001126 EF?? F???      00171         goto waitWrite
-00112A 0012           00172     return
-                      00173 
+001110 2AA9           00160     incf EEADR, F, A        ; 0x10
+001112 0E02           00161     movlw 2
+001114 6EA8           00162     movwf EEDATA, A
+001116 EC?? F???      00163     call writeToEE
+                      00164     
+00111A 2AA9           00165     incf EEADR, F, A        ; 0x11
+00111C 0E01           00166     movlw 1
+00111E 6EA8           00167     movwf EEDATA, A
+001120 EC?? F???      00168     call writeToEE
+                      00169     
+001124 2AA9           00170     incf EEADR, F, A        ; 0x12
+001126 0E08           00171     movlw 8
+001128 6EA8           00172     movwf EEDATA, A
+00112A EC?? F???      00173     call writeToEE
                       00174     
-00112C                00175 menuLCD:
-                      00176     
-00112C                00177 configT2:
-                      00178     
-00112C                00179 jugar:
-                      00180     
-00112C                00181 ciclo1:
+00112E 2AA9           00175     incf EEADR, F, A        ; 0x13
+001130 0E04           00176     movlw 4
+001132 6EA8           00177     movwf EEDATA, A
+001134 EC?? F???      00178     call writeToEE
+                      00179         
+001138 94A6           00180     bcf EECON1, WREN, A
+00113A 0012           00181     return
                       00182     
-00112C                00183 ciclo2:
-                      00184     
-00112C                00185 incorr:
-                      00186     
-00112C                00187 corr:
-                      00188     
-00112C                00189 puntajeLCD:
-                      00190     
+00113C                00183 writeToEE:
+00113C 0E55           00184     movlw 0x55
+00113E 6EA7           00185     movwf EECON2, A
+001140 0EAA           00186     movlw 0x0AA
+001142 6EA7           00187     movwf EECON2, A
+001144 82A6           00188     bsf EECON1, WR, A
+001146 EC?? F???      00189     call waitWrite
+00114A 0012           00190     return
                       00191     
-                      00192     
-                      00193     end
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE  5
+00114C                00192 waitWrite:
+00114C B2A6           00193     btfsc EECON1, WR, A
+00114E EF?? F???      00194         goto waitWrite
+001152 0012           00195     return
+                      00196 
+                      00197     
+001154                00198 menuLCD:
+001154 6A02           00199     clrf LCDConfig, A           ; Clear display
+001156 0E01           00200     movlw 1
+001158 6E03           00201     movwf LCDData, A
+00115A EC?? F???      00202     call sendLCD
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00203     
+00115E 0E02           00204     movlw b'010'
+001160 6E02           00205     movwf LCDConfig, A
+001162 0E4A           00206     movlw a'J'
+001164 6E03           00207     movwf LCDData, A
+001166 EC?? F???      00208     call sendLCD
+                      00209     
+00116A 0E75           00210     movlw a'u'
+00116C 6E03           00211     movwf LCDData, A
+00116E EC?? F???      00212     call sendLCD
+                      00213     
+001172 0E67           00214     movlw a'g'
+001174 6E03           00215     movwf LCDData, A
+001176 EC?? F???      00216     call sendLCD
+                      00217     
+00117A 0E61           00218     movlw a'a'
+00117C 6E03           00219     movwf LCDData, A
+00117E EC?? F???      00220     call sendLCD
+                      00221     
+001182 0E72           00222     movlw a'r'
+001184 6E03           00223     movwf LCDData, A
+001186 EC?? F???      00224     call sendLCD
+                      00225     
+00118A 6A02           00226     clrf LCDConfig, A           ; Set DDRAM to 0x09
+00118C 0E89           00227     movlw b'10001001'
+00118E 6E03           00228     movwf LCDData, A
+001190 EC?? F???      00229     call sendLCD
+                      00230     
+001194 0E02           00231     movlw b'010'
+001196 6E02           00232     movwf LCDConfig, A
+001198 0E31           00233     movlw a'1'
+00119A 6E03           00234     movwf LCDData, A
+00119C EC?? F???      00235     call sendLCD
+                      00236     
+0011A0 6A02           00237     clrf LCDConfig, A           ; Set DDRAM to 0x40
+0011A2 0EC0           00238     movlw b'11000000'
+0011A4 6E03           00239     movwf LCDData, A
+0011A6 EC?? F???      00240     call sendLCD
+                      00241     
+0011AA 0E02           00242     movlw b'010'
+0011AC 6E02           00243     movwf LCDConfig, A
+0011AE 0E50           00244     movlw a'P'
+0011B0 6E03           00245     movwf LCDData, A
+0011B2 EC?? F???      00246     call sendLCD
+                      00247     
+0011B6 0E75           00248     movlw a'u'
+0011B8 6E03           00249     movwf LCDData, A
+0011BA EC?? F???      00250     call sendLCD
+                      00251     
+0011BE 0E6E           00252     movlw a'n'
+0011C0 6E03           00253     movwf LCDData, A
+0011C2 EC?? F???      00254     call sendLCD
+                      00255     
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0011C6 0E74           00256     movlw a't'
+0011C8 6E03           00257     movwf LCDData, A
+0011CA EC?? F???      00258     call sendLCD
+                      00259     
+0011CE 0E61           00260     movlw a'a'
+0011D0 6E03           00261     movwf LCDData, A
+0011D2 EC?? F???      00262     call sendLCD
+                      00263     
+0011D6 0E6A           00264     movlw a'j'
+0011D8 6E03           00265     movwf LCDData, A
+0011DA EC?? F???      00266     call sendLCD
+                      00267     
+0011DE 0E65           00268     movlw a'e'
+0011E0 6E03           00269     movwf LCDData, A
+0011E2 EC?? F???      00270     call sendLCD
+                      00271     
+0011E6 6A02           00272     clrf LCDConfig, A           ; Set DDRAM to 0x49
+0011E8 0EC9           00273     movlw b'11001001'
+0011EA 6E03           00274     movwf LCDData, A
+0011EC EC?? F???      00275     call sendLCD
+                      00276     
+0011F0 0E02           00277     movlw b'010'
+0011F2 6E02           00278     movwf LCDConfig, A
+0011F4 0E32           00279     movlw a'2'
+0011F6 6E03           00280     movwf LCDData, A
+0011F8 EC?? F???      00281     call sendLCD
+                      00282     
+0011FC 0012           00283     return
+                      00284     
+                      00285     
+0011FE                00286 sendLCD:
+0011FE C002 FF8B      00287     movff LCDConfig, LATC               ; Set values for RS and RW
+001202 848B           00288     bsf LATC, 2, A              ; Set enable bit
+001204 C003 FF8C      00289     movff LCDData, LATD         ; Load Data port
+001208 0000           00290     nop
+00120A 948B           00291     bcf LATC, 2, A              ; Clear enable bit
+00120C EC?? F???      00292     call waitLCD
+001210 0012           00293     return
+                      00294     
+001212                00295 waitLCD:
+001212 6895           00296     setf TRISD, A               ; Change port D to input
+001214 0E01           00297     movlw b'001'
+001216 6E8B           00298     movwf LATC, A               ; Set values for E, RS and RW
+001218 848B           00299     bsf LATC, 2, A              ; Set enable bit
+00121A BE83           00300     btfsc PORTD, 7, A           ; Checks busyflag
+00121C EF?? F???      00301         goto waitLCD
+001220 948B           00302     bcf LATC, 2, A              ; Clear enable bit
+001222 6A95           00303     clrf TRISD, A               ; Change port D back to output
+001224 0012           00304     return
+                      00305     
+001226                00306 configT2:
+                      00307     
+001226                00308 jugar:
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00309     
+001226                00310 ciclo1:
+                      00311     
+001226                00312 ciclo2:
+                      00313     
+001226                00314 incorr:
+                      00315     
+001226                00316 corr:
+                      00317     
+001226                00318 puntajeLCD:
+                      00319     
+                      00320     
+                      00321     
+                      00322     end
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE  8
 
 
 SYMBOL TABLE
@@ -284,7 +431,7 @@ AHEN                              00000001
 AN0                               00000000
 AN1                               00000001
 AN2                               00000002
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE  6
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE  9
 
 
 SYMBOL TABLE
@@ -343,7 +490,7 @@ BRG12                             00000004
 BRG13                             00000005
 BRG14                             00000006
 BRG15                             00000007
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE  7
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 10
 
 
 SYMBOL TABLE
@@ -402,7 +549,7 @@ CCP1ASE                           00000007
 CCP1CON                           00000FBD
 CCP1IE                            00000002
 CCP1IF                            00000002
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE  8
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 11
 
 
 SYMBOL TABLE
@@ -461,7 +608,7 @@ CRC16EE                           00000002
 CRC16EF                           00000002
 CRC5EE                            00000001
 CRC5EF                            00000001
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE  9
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 12
 
 
 SYMBOL TABLE
@@ -520,7 +667,7 @@ ECCP1DEL                          00000FB7
 ECCP2CON                          00000F97
 EDG1POL                           00000004
 EDG1SEL0                          00000002
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 10
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 13
 
 
 SYMBOL TABLE
@@ -579,7 +726,7 @@ FSR2L                             00000FD9
 FVREN                             00000007
 FVRS0                             00000004
 FVRS1                             00000005
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 11
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 14
 
 
 SYMBOL TABLE
@@ -638,7 +785,7 @@ INTEDG0                           00000006
 INTEDG1                           00000005
 INTEDG2                           00000004
 INTSRC                            00000005
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 12
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 15
 
 
 SYMBOL TABLE
@@ -697,7 +844,7 @@ LATB7                             00000007
 LATC                              00000F8B
 LATC0                             00000000
 LATC1                             00000001
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 13
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 16
 
 
 SYMBOL TABLE
@@ -721,6 +868,8 @@ LATE                              00000F8D
 LATE0                             00000000
 LATE1                             00000001
 LATE2                             00000002
+LCDConfig                         00000002
+LCDData                           00000003
 LFIOFS                            00000000
 LVDIE                             00000002
 LVDIF                             00000002
@@ -754,14 +903,14 @@ OSCFIE                            00000007
 OSCFIF                            00000007
 OSCFIP                            00000007
 OSCTUNE                           00000F9B
-OSTS                              00000003
-OV                                00000003
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 14
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 17
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+OSTS                              00000003
+OV                                00000003
 P                                 00000004
 P1A                               00000002
 P1M0                              00000006
@@ -813,14 +962,14 @@ POSTDEC1                          00000FE5
 POSTDEC2                          00000FDD
 POSTINC0                          00000FEE
 POSTINC1                          00000FE6
-POSTINC2                          00000FDE
-PPB0                              00000000
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 15
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 18
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+POSTINC2                          00000FDE
+PPB0                              00000000
 PPB1                              00000001
 PPBI                              00000001
 PPBRST                            00000006
@@ -872,14 +1021,14 @@ RC2                               00000002
 RC4                               00000004
 RC5                               00000005
 RC6                               00000006
-RC7                               00000007
-RCEN                              00000003
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 16
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 19
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RC7                               00000007
+RCEN                              00000003
 RCIDL                             00000006
 RCIE                              00000005
 RCIF                              00000005
@@ -931,14 +1080,14 @@ SLRCON                            00000F7A
 SLRD                              00000003
 SLRE                              00000004
 SMP                               00000007
-SOFIE                             00000006
-SOFIF                             00000006
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 17
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 20
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SOFIE                             00000006
+SOFIF                             00000006
 SOSCEN                            00000003
 SOSCGO                            00000003
 SOSCRUN                           00000006
@@ -990,14 +1139,14 @@ SSP1ADD5                          00000005
 SSP1ADD6                          00000006
 SSP1ADD7                          00000007
 SSP1BUF                           00000FC9
-SSP1CON1                          00000FC6
-SSP1CON2                          00000FC5
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 18
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 21
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+SSP1CON1                          00000FC6
+SSP1CON2                          00000FC5
 SSP1CON3                          00000FCB
 SSP1IE                            00000003
 SSP1IF                            00000003
@@ -1049,14 +1198,14 @@ STR1A                             00000000
 STR1B                             00000001
 STR1C                             00000002
 STR1D                             00000003
-STR1SYNC                          00000004
-STRA                              00000000
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 19
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 22
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+STR1SYNC                          00000004
+STRA                              00000000
 STRB                              00000001
 STRC                              00000002
 STRD                              00000003
@@ -1108,14 +1257,14 @@ T2OUTPS2                          00000005
 T2OUTPS3                          00000006
 T3CKPS0                           00000004
 T3CKPS1                           00000005
-T3CON                             00000FB1
-T3DONE                            00000003
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 20
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 23
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+T3CON                             00000FB1
+T3DONE                            00000003
 T3GCON                            00000FB4
 T3GGO                             00000003
 T3GGO_NOT_DONE                    00000003
@@ -1167,14 +1316,14 @@ TMR3                              00000FB2
 TMR3CS0                           00000006
 TMR3CS1                           00000007
 TMR3GE                            00000007
-TMR3GIE                           00000001
-TMR3GIF                           00000001
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 21
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 24
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TMR3GIE                           00000001
+TMR3GIF                           00000001
 TMR3GIP                           00000001
 TMR3H                             00000FB3
 TMR3IE                            00000001
@@ -1226,14 +1375,14 @@ TRISD5                            00000005
 TRISD6                            00000006
 TRISD7                            00000007
 TRISE                             00000F96
-TRISE0                            00000000
-TRISE1                            00000001
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 22
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 25
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TRISE0                            00000000
+TRISE1                            00000001
 TRISE2                            00000002
 TRMT                              00000001
 TRNIE                             00000003
@@ -1285,14 +1434,14 @@ UEP5                              00000F6F
 UEP6                              00000F70
 UEP7                              00000F71
 UEP8                              00000F72
-UEP9                              00000F73
-UERRIE                            00000001
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 23
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 26
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+UEP9                              00000F73
+UERRIE                            00000001
 UERRIF                            00000001
 UFRM                              00000F68
 UFRMH                             00000F69
@@ -1344,14 +1493,14 @@ _BOREN_SBORDIS_2L                 000000FF
 _BORV_190_2L                      000000FF
 _BORV_220_2L                      000000F7
 _BORV_250_2L                      000000EF
-_BORV_285_2L                      000000E7
-_CCP2MX_RB3_3H                    000000FE
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 24
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 27
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_BORV_285_2L                      000000E7
+_CCP2MX_RB3_3H                    000000FE
 _CCP2MX_RC1_3H                    000000FF
 _CFGPLLEN_OFF_1L                  000000FD
 _CFGPLLEN_ON_1L                   000000FF
@@ -1403,14 +1552,14 @@ _FOSC_ECHCLKO_1H                  000000F4
 _FOSC_ECHIO_1H                    000000F5
 _FOSC_ECLCLKO_1H                  000000FC
 _FOSC_ECLIO_1H                    000000FD
-_FOSC_ECMCLKO_1H                  000000FA
-_FOSC_ECMIO_1H                    000000FB
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 25
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 28
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_FOSC_ECMCLKO_1H                  000000FA
+_FOSC_ECMIO_1H                    000000FB
 _FOSC_HSH_1H                      000000F2
 _FOSC_HSM_1H                      000000F3
 _FOSC_INTOSCCLKO_1H               000000F9
@@ -1462,14 +1611,14 @@ _WDTPS_2048_2H                    000000EF
 _WDTPS_256_2H                     000000E3
 _WDTPS_2_2H                       000000C7
 _WDTPS_32768_2H                   000000FF
-_WDTPS_32_2H                      000000D7
-_WDTPS_4096_2H                    000000F3
-MPASM 5.82                     SIMONDICE.ASM   4-30-2019  19:45:53         PAGE 26
+MPASM 5.82                     SIMONDICE.ASM   5-1-2019  13:57:54         PAGE 29
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+_WDTPS_32_2H                      000000D7
+_WDTPS_4096_2H                    000000F3
 _WDTPS_4_2H                       000000CB
 _WDTPS_512_2H                     000000E7
 _WDTPS_64_2H                      000000DB
@@ -1496,21 +1645,24 @@ _nLPBOR_OFF_2L                    000000FF
 _nLPBOR_ON_2L                     000000BF
 _nPWRTEN_OFF_2L                   000000FF
 _nPWRTEN_ON_2L                    000000FE
-ciclo1                            0000112C
-ciclo2                            0000112C
-configT2                          0000112C
-corr                              0000112C
-incorr                            0000112C
+ciclo1                            00001226
+ciclo2                            00001226
+configT2                          00001226
+corr                              00001226
+here                              00001066
+incorr                            00001226
 indice                            00000001
-jugar                             0000112C
-loadEEPROM                        00001044
-loop                              00001038
+jugar                             00001226
+loadEEPROM                        0000106A
+loop                              0000105E
 main                              00001018
-menuLCD                           0000112C
+menuLCD                           00001154
 puntaje                           00000000
-puntajeLCD                        0000112C
-waitWrite                         00001124
-writeToEE                         00001114
+puntajeLCD                        00001226
+sendLCD                           000011FE
+waitLCD                           00001212
+waitWrite                         0000114C
+writeToEE                         0000113C
 
 Errors   :     0
 Warnings :     0 reported,     0 suppressed

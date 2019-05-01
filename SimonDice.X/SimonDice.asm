@@ -5,6 +5,8 @@
     ; Variable definition
 puntaje EQU 0x00
 indice EQU 0x01
+LCDConfig EQU 0x02
+LCDData EQU 0x03
     
     ; Code for software simulation
     org 0x00	    ; Reset vector 
@@ -45,11 +47,31 @@ main:
     clrf TRISD, A
     clrf LATD, A
     
+    call waitLCD
+    
+    clrf LCDConfig			    
+    movlw b'00111000'		    ; Function set for LCD
+    movwf LCDData
+    call sendLCD
+    
+    movlw b'00000110'		    ; Entry mode
+    movwf LCDData
+    call sendLCD
+    
+    movlw b'00001111'		    ; Display on
+    movwf LCDData
+    call sendLCD
+    
+    movlw b'00000001'		    ; Clear display
+    movwf LCDData
+    call sendLCD
+    
     
 loop:
     call loadEEPROM
-    call configT2
+    ;call configT2
     call menuLCD
+here goto here
     
 loadEEPROM:
     movlw 0
@@ -174,6 +196,112 @@ waitWrite:
 
     
 menuLCD:
+    clrf LCDConfig, A		; Clear display
+    movlw 1
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig, A
+    movlw a'J'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'u'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'g'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'a'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'r'
+    movwf LCDData, A
+    call sendLCD
+    
+    clrf LCDConfig, A		; Set DDRAM to 0x09
+    movlw b'10001001'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig, A
+    movlw a'1'
+    movwf LCDData, A
+    call sendLCD
+    
+    clrf LCDConfig, A		; Set DDRAM to 0x40
+    movlw b'11000000'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig, A
+    movlw a'P'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'u'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'n'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a't'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'a'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'j'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'e'
+    movwf LCDData, A
+    call sendLCD
+    
+    clrf LCDConfig, A		; Set DDRAM to 0x49
+    movlw b'11001001'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig, A
+    movlw a'2'
+    movwf LCDData, A
+    call sendLCD
+    
+    return
+    
+    
+sendLCD:
+    movff LCDConfig, LATC		; Set values for RS and RW
+    bsf LATC, 2, A		; Set enable bit
+    movff LCDData, LATD		; Load Data port
+    nop
+    bcf LATC, 2, A		; Clear enable bit
+    call waitLCD
+    return
+    
+waitLCD:
+    setf TRISD, A		; Change port D to input
+    movlw b'001'
+    movwf LATC, A		; Set values for E, RS and RW
+    bsf LATC, 2, A		; Set enable bit
+    btfsc PORTD, 7, A		; Checks busyflag
+	goto waitLCD
+    bcf LATC, 2, A		; Clear enable bit
+    clrf TRISD, A		; Change port D back to output
+    return
     
 configT2:
     
