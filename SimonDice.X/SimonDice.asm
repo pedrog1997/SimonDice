@@ -58,127 +58,118 @@ loadEEPROM:
     movwf EEDATA, A
     movlw b'00000100'
     movwf EECON1, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x01
+    incf EEADR, F, A	    ; 0x01
     movlw 4
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x02
+    incf EEADR, F, A	    ; 0x02
     movlw 2
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x03
+    incf EEADR, F, A	    ; 0x03
     movlw 4
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x04
+    incf EEADR, F, A	    ; 0x04
     movlw 2
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x05
+    incf EEADR, F, A	    ; 0x05
     movlw 4
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x06
+    incf EEADR, F, A	    ; 0x06
     movlw 8
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x07
+    incf EEADR, F, A	    ; 0x07
     movlw 4
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x08
+    incf EEADR, F, A	    ; 0x08
     movlw 8
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x09
+    incf EEADR, F, A	    ; 0x09
     movlw 1
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x0A Segunda secuencia
+    incf EEADR, F, A	    ; 0x0A Segunda secuencia
     movlw 2
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x0B
+    incf EEADR, F, A	    ; 0x0B
     movlw 4
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x0C
+    incf EEADR, F, A	    ; 0x0C
     movlw 8
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x0D
+    incf EEADR, F, A	    ; 0x0D
     movlw 1
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x0E
+    incf EEADR, F, A	    ; 0x0E
     movlw 2
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x0F
+    incf EEADR, F, A	    ; 0x0F
     movlw 1
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x10
+    incf EEADR, F, A	    ; 0x10
     movlw 2
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x11
+    incf EEADR, F, A	    ; 0x11
     movlw 1
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x12
+    incf EEADR, F, A	    ; 0x12
     movlw 8
     movwf EEDATA, A
-    bsf EECON1, WR, A
-    call waitwrite
+    call writeToEE
     
-    incf EEADR, A	    ; 0x13
+    incf EEADR, F, A	    ; 0x13
     movlw 4
-    bsf EECON1, WR, A
-    call waitwrite
+    movwf EEDATA, A
+    call writeToEE
     	
     bcf EECON1, WREN, A
+    return
     
-waitwrite:
+writeToEE:
+    movlw 0x55
+    movwf EECON2, A
+    movlw 0x0AA
+    movwf EECON2, A
+    bsf EECON1, WR, A
+    call waitWrite
+    return
+    
+waitWrite:
     btfsc EECON1, WR, A
-	goto waitwrite
+	goto waitWrite
     return
 
     
