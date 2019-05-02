@@ -185,6 +185,10 @@ loadEEPROM:
     movlw 4
     movwf EEDATA, A
     call writeToEE
+    
+    incf EEADR, F, A	    ; 0x14
+    clrf EEDATA, A
+    call writeToEE
     	
     bcf EECON1, WREN, A
     return
@@ -375,12 +379,12 @@ loop2:
     ;guardar primer numero
 Num:
     call ckc1
-    btfss flag,bitf,A
+    btfss flag, bitf, A
 	goto Num
     bcf flag, bitf, A
     movf indice, W, A
     addwf iterator, W, A
-    movwf EEADR
+    movwf EEADR, A
     bcf EECON1, EEPGD, A
     bcf EECON1, CFGS, A
     bsf EECON1, RD, A
@@ -499,6 +503,10 @@ antirebotes:
     return
     
 incorr:
+    movlw .16
+    movwf LATA, A
+    call delay1
+    clrf LATA, A
     movlw 0x14
     movwf EEADR, A
     bcf EECON1, EEPGD, A
@@ -507,21 +515,17 @@ incorr:
     movf EEDATA, W, A
     cpfsgt puntaje, A
 	call menuLCD
-    movlw .16
-    movwf LATA, A
-    call delay1
-    clrf LATA, A
     call setmaxpoints
    
 corr:
+    movlw .32
+    movwf LATA, A
+    call delay1
+    clrf LATA, A
     incf puntaje, F, A
     movlw .10
     cpfseq puntaje, A
 	call masterloop 
-    movlw .32
-    movwf LATA
-    call delay1
-    clrf LATA, A
     call setmaxpoints
     
 setmaxpoints:
@@ -529,7 +533,10 @@ setmaxpoints:
     movwf EEADR
     movf puntaje, W, A
     movwf EEDATA, A
+    movlw b'00000100'
+    movwf EECON1, A
     call writeToEE
+    bcf EECON1, WREN, A
     call menuLCD
     
 puntajeLCD:
