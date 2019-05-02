@@ -79,7 +79,7 @@ main:
 loop:
     call loadEEPROM
     call configT2
-    call menuLCD
+    goto menuLCD
 here goto here
     
 loadEEPROM:
@@ -395,7 +395,7 @@ Num:
     subwf iterator, W, A
     btfss STATUS, Z, A
 	call loop2
-    call corr
+    goto corr
 		
 ;teclado
 ckc1:   
@@ -419,7 +419,7 @@ ckc2:
     btfss PORTB,2,A
 	call dos
     btfss PORTB,1,A
-	CALL dos
+	call dos
     btfss PORTB,0,A
 	call dos
     goto ckc3
@@ -432,7 +432,7 @@ ckc3:
     btfss PORTB,2,A
 	call cuatro
     btfss PORTB,1,A
-	CALL cuatro
+	call cuatro
     btfss PORTB,0,A
 	call cuatro
     goto ckc4
@@ -445,7 +445,7 @@ ckc4:
     btfss PORTB,2,A
 	call ocho
     btfss PORTB,1,A
-	CALL ocho
+	call ocho
     btfss PORTB,0,A
 	call ocho
     return
@@ -514,8 +514,8 @@ incorr:
     bsf EECON1, RD, A
     movf EEDATA, W, A
     cpfsgt puntaje, A
-	call menuLCD
-    call setmaxpoints
+	goto menuLCD
+    goto setmaxpoints
    
 corr:
     movlw .32
@@ -525,8 +525,8 @@ corr:
     incf puntaje, F, A
     movlw .10
     cpfseq puntaje, A
-	call masterloop 
-    call setmaxpoints
+	goto masterloop 
+    goto setmaxpoints
     
 setmaxpoints:
     movlw 0x14
@@ -537,7 +537,7 @@ setmaxpoints:
     movwf EECON1, A
     call writeToEE
     bcf EECON1, WREN, A
-    call menuLCD
+    goto menuLCD
     
 puntajeLCD:
     call delay
