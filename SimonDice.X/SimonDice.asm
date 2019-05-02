@@ -295,11 +295,10 @@ check1:
     btfss PORTB, 3, A
 	goto jugar
     movlw b'11011111'
+    movwf LATB, A
     btfss PORTB, 3, A
 	goto puntajeLCD
     goto check1
-    return
-    
     
 sendLCD:
     movff LCDConfig, LATC	; Set values for RS and RW
@@ -330,6 +329,8 @@ jugar:
     call delay
     btfss PORTB, 3, A
 	goto jugar
+	
+    call showScore
     
     btfss TMR2, 0, A
 	goto sec1
@@ -401,7 +402,7 @@ ckc1:
     btfss PORTB,2,A
 	call uno
     btfss PORTB,1,A
-	CALL uno
+	call uno
     btfss PORTB,0,A
 	call uno
     goto ckc2
@@ -446,6 +447,7 @@ ckc4:
     return
     
 uno:
+    call antirebotes
     bsf flag,bitf,A
     movlw .1
     movwf comparador, A
@@ -455,6 +457,7 @@ uno:
     return
     
 dos:
+    call antirebotes
     bsf flag,bitf,A
     movlw .2
     movwf comparador, A
@@ -464,6 +467,7 @@ dos:
     return
     
 cuatro:
+    call antirebotes
     bsf flag,bitf,A
     movlw .4
     movwf comparador, A
@@ -473,12 +477,25 @@ cuatro:
     return
     
 ocho:
+    call antirebotes
     bsf flag,bitf,A
     movlw .8
     movwf comparador, A
     movwf LATA,A
     call delay1
     clrf LATA, A
+    return
+    
+antirebotes:
+    call delay
+    btfss PORTB, 0, A
+	goto antirebotes
+    btfss PORTB, 1, A
+	goto antirebotes
+    btfss PORTB, 2, A
+	goto antirebotes
+    btfss PORTB, 3, A
+	goto antirebotes
     return
     
 incorr:
@@ -491,7 +508,9 @@ incorr:
     cpfsgt puntaje, A
 	call menuLCD
     movlw .16
-    movwf LATA
+    movwf LATA, A
+    call delay1
+    clrf LATA, A
     call setmaxpoints
    
 corr:
@@ -501,6 +520,8 @@ corr:
 	call masterloop 
     movlw .32
     movwf LATA
+    call delay1
+    clrf LATA, A
     call setmaxpoints
     
 setmaxpoints:
@@ -512,6 +533,9 @@ setmaxpoints:
     call menuLCD
     
 puntajeLCD:
+    call delay
+    btfss PORTB, 3, A
+	goto puntajeLCD
     
     call maxPoints
     
@@ -588,6 +612,14 @@ puntajeLCD:
     call displayNum		; Dígito menos significativo
     
     goto here
+    
+    return
+    
+showScore:
+    clrf LCDConfig, A		; Clear display
+    movlw 1
+    movwf LCDData, A
+    call sendLCD
     
     return
     
