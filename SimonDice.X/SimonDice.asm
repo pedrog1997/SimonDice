@@ -551,35 +551,7 @@ puntajeLCD:
     movwf LCDData, A
     call sendLCD
     
-    movlw b'010'
-    movwf LCDConfig, A
-    movlw a'P'
-    movwf LCDData, A
-    call sendLCD
-    
-    movlw a'u'
-    movwf LCDData, A
-    call sendLCD
-    
-    movlw a'n'
-    movwf LCDData, A
-    call sendLCD
-    
-    movlw a't'
-    movwf LCDData, A
-    call sendLCD
-    
-    movlw a'a'
-    movwf LCDData, A
-    call sendLCD
-    
-    movlw a'j'
-    movwf LCDData, A
-    call sendLCD
-    
-    movlw a'e'
-    movwf LCDData, A
-    call sendLCD
+    call writeLCDPuntaje
     
     clrf LCDConfig, A		; Set DDRAM to 0x07
     movlw b'10000111'
@@ -622,11 +594,49 @@ puntajeLCD:
     
     return
     
+writeLCDPuntaje:
+    movlw b'010'
+    movwf LCDConfig, A
+    movlw a'P'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'u'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'n'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a't'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'a'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'j'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'e'
+    movwf LCDData, A
+    call sendLCD
+    
+    return
+    
 showScore:
     clrf LCDConfig, A		; Clear display
     movlw 1
     movwf LCDData, A
     call sendLCD
+    
+    call writeLCDPuntaje
+    
+    movff puntaje, NUM
+    call displayNum
     
     return
     
