@@ -79,8 +79,20 @@ main:
 loop:
     call loadEEPROM
     call configT2
-    goto menuLCD
-here goto here
+    call menuLCD
+    
+    goto here
+    
+check1:
+    movlw b'11101111'
+    movwf LATB, A
+    btfss PORTB, 3, A
+	call jugar
+    movlw b'11011111'
+    movwf LATB, A
+    btfss PORTB, 3, A
+	call puntajeLCD
+    goto check1
     
 loadEEPROM:
     movlw 0
@@ -206,7 +218,6 @@ waitWrite:
     btfsc EECON1, WR, A
 	goto waitWrite
     return
-
     
 menuLCD:
     clrf LCDConfig, A		; Clear display
@@ -292,18 +303,8 @@ menuLCD:
     movlw a'2'
     movwf LCDData, A
     call sendLCD
-    
-check1:
-    movlw b'11101111'
-    movwf LATB, A
-    btfss PORTB, 3, A
-	goto jugar
-    movlw b'11011111'
-    movwf LATB, A
-    btfss PORTB, 3, A
-	goto puntajeLCD
-    goto check1
-    
+    return
+ 
 sendLCD:
     movff LCDConfig, LATC	; Set values for RS and RW
     bsf LATC, 2, A		; Set enable bit
@@ -333,30 +334,166 @@ jugar:
     call delay
     btfss PORTB, 3, A
 	goto jugar
-	
-    call showScore
     
     btfss TMR2, 0, A
 	goto sec1
     movlw 0x0A 
     movwf indice, A
-    movwf address, A
+    movwf EEADR, A
     goto clc
 sec1 
     clrf indice, A
-    clrf address, A
+    clrf EEADR, A
 clc
     clrf puntaje, A
-    goto masterloop
+    call showScore
+
+gameloop
+    call updateScore
+    call showSequence
+    call waitSequence
+    goto gameloop
     
-masterloop:
-    movlw 0xFF
-    movwf iterator
-loop1: 
-    incf iterator, F, A
-    movf indice, W, A	
-    addwf iterator, W, A
-    movwf EEADR
+showSequence:
+    call showLED
+ciclo1
+    movf indice, W, A
+    addwf puntaje, W, A
+    cpfsgt EEADR, A
+	goto c1T
+    movf indice, W, A
+    movwf EEADR, A
+    return
+c1T
+    incf EEADR, F, A
+    call showLED
+    goto ciclo1
+    
+waitSequence:
+    call ckcT
+    bcf EECON1, EEPGD, A
+    bcf EECON1, CFGS, A
+    bsf EECON1, RD, A
+    movf EEDATA, W, A
+    cpfseq comparador, A
+	goto incorr
+    incf EEADR, F, A
+    movf indice, W, A
+    addwf puntaje, W, A
+    cpfseq EEADR, A
+	goto waitSequence
+    goto corr
+    
+corr
+    movlw .32
+    movwf LATA, A
+    call delay1
+    clrf LATA, A
+    incf puntaje, F, A
+    movlw .10
+    cpfseq puntaje, A
+	return 
+    call setmaxpoints
+    call win
+    
+incorr
+    movlw .16
+    movwf LATA, A
+    call delay1
+    clrf LATA, A
+    movlw 0x14
+    movwf EEADR, A
+    bcf EECON1, EEPGD, A
+    bcf EECON1, CFGS, A
+    bsf EECON1, RD, A
+    movf EEDATA, W, A
+    cpfsgt puntaje, A
+	call loose
+    call setmaxpoints
+    call loose
+    
+win:
+    clrf LCDConfig, A		; Clear display
+    movlw 1
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig, A
+    
+    movlw a'F'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'e'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'l'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'i'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'c'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'i'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'd'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'a'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'd'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'e'
+    movwf LCDData, A
+    call sendLCD
+    movlw a's'
+    movwf LCDData, A
+    call sendLCD
+    
+    goto here
+    
+loose:
+    clrf LCDConfig, A		; Clear display
+    movlw 1
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig, A
+    
+    movlw a'G'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'a'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'm'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'e'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'O'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'v'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'e'
+    movwf LCDData, A
+    call sendLCD
+    movlw a'r'
+    movwf LCDData, A
+    call sendLCD
+    
+    goto here
+    
+showLED:
     bcf EECON1, EEPGD, A
     bcf EECON1, CFGS, A
     bsf EECON1, RD, A
@@ -364,95 +501,57 @@ loop1:
     movwf LATA, A
     call delay1
     clrf LATA, A
-    movf puntaje, W, A
-    subwf iterator, W, A
-    btfss STATUS, Z, A
-	call loop1
-    movf indice, W, A
-    movwf address
-    movlw 0xFF
-    movwf iterator
-loop2:
-    ;lectura del teclado
-    incf iterator, F, A
-    bcf flag,bitf,A
-    ;guardar primer numero
-Num:
-    call ckc1
-    btfss flag, bitf, A
-	goto Num
-    bcf flag, bitf, A
-    movf indice, W, A
-    addwf iterator, W, A
-    movwf EEADR, A
-    bcf EECON1, EEPGD, A
-    bcf EECON1, CFGS, A
-    bsf EECON1, RD, A
-    movf EEDATA, W, A
-    cpfseq comparador, A
-	goto incorr
-    movf puntaje, W, A
-    subwf iterator, W, A
-    btfss STATUS, Z, A
-	call loop2
-    goto corr
+    return
 		
 ;teclado
-ckc1:   
+ckcT:   
     movlw b'11101111'
     movwf LATB,A
     btfss PORTB,3,A
-	call uno
+	goto uno
     btfss PORTB,2,A
-	call uno
+	goto uno
     btfss PORTB,1,A
-	call uno
+	goto uno
     btfss PORTB,0,A
-	call uno
-    goto ckc2
-    
-ckc2:
+	goto uno
+
     movlw b'11011111'
     movwf LATB,A
     btfss PORTB,3,A
-	call dos
+	goto dos
     btfss PORTB,2,A
-	call dos
+	goto dos
     btfss PORTB,1,A
-	call dos
+	goto dos
     btfss PORTB,0,A
-	call dos
-    goto ckc3
-    
-ckc3:
+	goto dos
+
     movlw b'10111111'
     movwf LATB,A
     btfss PORTB,3,A
-	call cuatro
+	goto cuatro
     btfss PORTB,2,A
-	call cuatro
+	goto cuatro
     btfss PORTB,1,A
-	call cuatro
+	goto cuatro
     btfss PORTB,0,A
-	call cuatro
-    goto ckc4
-    
-ckc4:
+	goto cuatro
+
     movlw b'01111111'
     movwf LATB,A
     btfss PORTB,3,A
-	call ocho
+	goto ocho
     btfss PORTB,2,A
-	call ocho
+	goto ocho
     btfss PORTB,1,A
-	call ocho
+	goto ocho
     btfss PORTB,0,A
-	call ocho
-    return
-    
-uno:
+	goto ocho
+    goto ckcT
+	
+uno
     call antirebotes
-    bsf flag,bitf,A
     movlw .1
     movwf comparador, A
     movwf LATA, A
@@ -460,9 +559,8 @@ uno:
     clrf LATA, A
     return
     
-dos:
+dos
     call antirebotes
-    bsf flag,bitf,A
     movlw .2
     movwf comparador, A
     movwf LATA,A
@@ -470,9 +568,8 @@ dos:
     clrf LATA, A
     return
     
-cuatro:
+cuatro
     call antirebotes
-    bsf flag,bitf,A
     movlw .4
     movwf comparador, A
     movwf LATA,A
@@ -480,9 +577,8 @@ cuatro:
     clrf LATA, A
     return
     
-ocho:
+ocho
     call antirebotes
-    bsf flag,bitf,A
     movlw .8
     movwf comparador, A
     movwf LATA,A
@@ -502,32 +598,6 @@ antirebotes:
 	goto antirebotes
     return
     
-incorr:
-    movlw .16
-    movwf LATA, A
-    call delay1
-    clrf LATA, A
-    movlw 0x14
-    movwf EEADR, A
-    bcf EECON1, EEPGD, A
-    bcf EECON1, CFGS, A
-    bsf EECON1, RD, A
-    movf EEDATA, W, A
-    cpfsgt puntaje, A
-	goto menuLCD
-    goto setmaxpoints
-   
-corr:
-    movlw .32
-    movwf LATA, A
-    call delay1
-    clrf LATA, A
-    incf puntaje, F, A
-    movlw .10
-    cpfseq puntaje, A
-	goto masterloop 
-    goto setmaxpoints
-    
 setmaxpoints:
     movlw 0x14
     movwf EEADR
@@ -537,7 +607,7 @@ setmaxpoints:
     movwf EECON1, A
     call writeToEE
     bcf EECON1, WREN, A
-    goto menuLCD
+    return
     
 puntajeLCD:
     call delay
@@ -590,8 +660,6 @@ puntajeLCD:
     movff WREG, NUM
     call displayNum		; Dígito menos significativo
     
-    goto here
-    
     return
     
 writeLCDPuntaje:
@@ -634,6 +702,15 @@ showScore:
     call sendLCD
     
     call writeLCDPuntaje
+    call updateScore
+    
+    return
+    
+updateScore:
+    clrf LCDConfig, A		; Set DDRAM to 0x08
+    movlw b'10001000'
+    movwf LCDData, A
+    call sendLCD
     
     movff puntaje, NUM
     call displayNum
@@ -794,5 +871,7 @@ loopdelay
     decfsz DCounter2, 1
     goto loopdelay
     return
+    
+here goto here
     
     end
