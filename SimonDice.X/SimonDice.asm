@@ -63,8 +63,11 @@ main:
     movwf LCDData
     call sendLCD
     
-loop:
     call loadEEPROM
+    call configT2
+    
+loop:
+    
     
     goto loop
     
@@ -212,6 +215,11 @@ writeToEE:
 waitWrite:
     btfsc EECON1, WR, A
 	goto waitWrite
+    return
+    
+configT2:
+    clrf T2CON, A
+    bsf T2CON, TMR2ON, A
     return
     
     end
