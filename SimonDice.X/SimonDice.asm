@@ -44,8 +44,6 @@ main:
     clrf TRISD, A
     clrf LATD, A
     
-    call waitLCD
-    
     clrf LCDConfig			    
     movlw b'00111000'		    ; Function set for LCD
     movwf LCDData
@@ -63,22 +61,29 @@ main:
     movwf LCDData
     call sendLCD
     
+    
+    
     call loadEEPROM
     call configT2
+
+    
     
 loop:
+    call menuLCD
     
-    
+    goto toend
     goto loop
     
     
 sendLCD:
-    movff LCDConfig, LATC	; Set values for RS and RW
+    call waitLCD
+    movf LCDConfig, W, A
+    movwf LATC			; Set values for RS and RW	
     bsf LATC, 2, A		; Set enable bit
-    movff LCDData, LATD		; Load Data port
+    movf LCDData, W, A
+    movwf LATD, A		; Load Data port
     nop
     bcf LATC, 2, A		; Clear enable bit
-    call waitLCD
     return
     
 waitLCD:
@@ -86,8 +91,9 @@ waitLCD:
     movlw b'001'
     movwf LATC, A		; Set values for E, RS and RW
     bsf LATC, 2, A		; Set enable bit
+waitFlag 
     btfsc PORTD, 7, A		; Checks busyflag
-	goto waitLCD
+	goto waitFlag
     bcf LATC, 2, A		; Clear enable bit
     clrf TRISD, A		; Change port D back to output
     return
@@ -221,5 +227,86 @@ configT2:
     clrf T2CON, A
     bsf T2CON, TMR2ON, A
     return
+    
+menuLCD:
+    clrf LCDConfig
+    movlw 1
+    movwf LCDData
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig
+    movlw a'1'
+    movwf LCDData
+    call sendLCD
+    
+    clrf LCDConfig
+    movlw b'10000010'
+    movwf LCDData
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig
+    movlw a'J'
+    movwf LCDData
+    call sendLCD
+    movlw a'u'
+    movwf LCDData
+    call sendLCD
+    movlw a'g'
+    movwf LCDData
+    call sendLCD
+    movlw a'a'
+    movwf LCDData
+    call sendLCD
+    movlw a'r'
+    movwf LCDData
+    call sendLCD
+    
+    clrf LCDConfig
+    movlw b'11000000'	    ; Set DDRAM 0x40
+    movwf LCDData
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig
+    movlw a'2'
+    movwf LCDData
+    call sendLCD
+    
+    clrf LCDConfig
+    movlw b'11000010'	    ; Set DDRAM 0x42
+    movwf LCDData
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig
+    movlw a'P'
+    movwf LCDData
+    call sendLCD
+    movlw a'u'
+    movwf LCDData
+    call sendLCD
+    movlw a'n'
+    movwf LCDData
+    call sendLCD
+    movlw a't'
+    movwf LCDData
+    call sendLCD
+    movlw a'a'
+    movwf LCDData
+    call sendLCD
+    movlw a'j'
+    movwf LCDData
+    call sendLCD
+    movlw a'e'
+    movwf LCDData
+    call sendLCD
+    
+    return
+    
+toend:
+    nop
+    nop
     
     end
