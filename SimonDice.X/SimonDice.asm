@@ -80,8 +80,7 @@ loop:
     call loadEEPROM
     call configT2
     call menuLCD
-    
-    goto here
+
     
 check1:
     movlw b'11101111'
@@ -360,8 +359,9 @@ ciclo1
     movf indice, W, A
     addwf puntaje, W, A
     cpfsgt EEADR, A
-	goto c1T
-    movf indice, W, A
+	goto c1F
+    goto c1T
+c1F movf indice, W, A
     movwf EEADR, A
     return
 c1T
