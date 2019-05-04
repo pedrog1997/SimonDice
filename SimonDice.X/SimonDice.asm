@@ -6,6 +6,8 @@
 LCDConfig EQU 0x02
 LCDData EQU 0x03
 reg EQU 0x10
+dig1 EQU 0x11
+dig0 EQU 0x12
 DCounter1 EQU 0X0C
 DCounter2 EQU 0X0D
     ; Code for software simulation
@@ -151,7 +153,27 @@ antirebotes:
     return  
     
 displayReg:
+    movlw b'11110000'
+    andwf reg, W, A
+    swapf WREG, W, A
+    movwf dig1, A
     
+    movlw b'00001111'
+    andwf reg, W, A
+    movwf dig0, A
+    
+    movlw 48
+    addwf dig1, F, A
+    addwf dig0, F, A
+    
+    movlw b'010'
+    movwf LCDConfig
+    movff dig1, LCDData
+    call sendLCD
+    
+    movff dig0, LCDData
+    call sendLCD
+
     return
     
 sendLCD:
