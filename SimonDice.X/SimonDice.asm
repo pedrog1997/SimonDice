@@ -5,6 +5,9 @@
     ; Variable definition
 LCDConfig EQU 0x02
 LCDData EQU 0x03
+reg EQU 0x10
+DCounter1 EQU 0X0C
+DCounter2 EQU 0X0D
     ; Code for software simulation
     org 0x00	    ; Reset vector 
     goto 0X1000 
@@ -71,9 +74,85 @@ main:
 loop:
     call menuLCD
     
-    goto toend
+    call waitKey
+    
     goto loop
     
+waitKey:
+    movlw b'11101111'
+    movwf LATB, A
+    btfss PORTB, 3, A
+	goto jugar
+    movlw b'11011111'
+    movwf LATB, A
+    btfss PORTB, 3, A
+	goto puntaje
+    goto waitKey
+    
+jugar:
+    
+    return
+    
+puntaje:
+    call antirebotes
+    
+    call writeLCDPuntaje
+    
+    clrf LCDConfig, A		; Set DDRAM to 0x07
+    movlw b'10000111'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig, A
+    movlw a'M'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'a'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'x'
+    movwf LCDData, A
+    call sendLCD
+    
+    clrf LCDConfig, A		; Set DDRAM to 0x11
+    movlw b'10001011'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw 0x14
+    movwf EEADR, A
+    bcf EECON1, EEPGD, A
+    bcf EECON1, CFGS, A
+    bsf EECON1, RD, A
+    movf EEDATA, W, A
+    movwf reg, A
+    call displayReg
+    
+    movlw b'11011111'
+    movwf LATB, A
+waitReturn
+    btfss PORTB, 0, A
+	goto antirebotes
+    goto waitReturn
+    
+antirebotes:
+    call delay
+    btfss PORTB, 0, A
+	goto antirebotes
+    btfss PORTB, 1, A
+	goto antirebotes
+    btfss PORTB, 2, A
+	goto antirebotes
+    btfss PORTB, 3, A
+	goto antirebotes
+    return  
+    
+displayReg:
+    
+    return
     
 sendLCD:
     call waitLCD
@@ -96,6 +175,39 @@ waitFlag
 	goto waitFlag
     bcf LATC, 2, A		; Clear enable bit
     clrf TRISD, A		; Change port D back to output
+    return
+    
+writeLCDPuntaje:
+    movlw b'010'
+    movwf LCDConfig, A
+    movlw a'P'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'u'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'n'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a't'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'a'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'j'
+    movwf LCDData, A
+    call sendLCD
+    
+    movlw a'e'
+    movwf LCDData, A
+    call sendLCD
+    
     return
     
 loadEEPROM:
@@ -279,34 +391,22 @@ menuLCD:
     movwf LCDData
     call sendLCD
     
-    movlw b'010'
-    movwf LCDConfig
-    movlw a'P'
-    movwf LCDData
-    call sendLCD
-    movlw a'u'
-    movwf LCDData
-    call sendLCD
-    movlw a'n'
-    movwf LCDData
-    call sendLCD
-    movlw a't'
-    movwf LCDData
-    call sendLCD
-    movlw a'a'
-    movwf LCDData
-    call sendLCD
-    movlw a'j'
-    movwf LCDData
-    call sendLCD
-    movlw a'e'
-    movwf LCDData
-    call sendLCD
+    call writeLCDPuntaje
     
     return
+  
+	
+delay:
+    movlw 0xe3
+    movwf DCounter1
+    movlw 0X68
+    movwf DCounter2
+loopdelay
+    decfsz DCounter1, 1
+    goto loopdelay
+    decfsz DCounter2, 1
+    goto loopdelay
+    return
     
-toend:
-    nop
-    nop
     
     end
