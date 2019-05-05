@@ -3,6 +3,12 @@
     #INCLUDE <P18F45K50.INC> 
     
     ; Variable definition
+#define SECMAX 10
+    
+puntaje EQU 0x00
+prendidos EQU 0x01
+secuencia EQU 0x04
+comparador EQU 0x05
 LCDConfig EQU 0x02
 LCDData EQU 0x03
 reg EQU 0x10
@@ -74,6 +80,8 @@ main:
     
     
 loop:
+    clrf puntaje
+    
     call menuLCD
     
     call waitKey
@@ -88,14 +96,148 @@ waitKey:
     movlw b'11011111'
     movwf LATB, A
     btfss PORTB, 3, A
-	goto puntaje
+	goto displayPuntaje
     goto waitKey
     
 jugar:
+    call antirebotes
     
+    btfss TMR2, 0, A
+	movlw 0
+    movlw 0x0A
+    movwf secuencia
+    
+iter	
+    clrf prendidos
+simon
+    movlw 1
+    addwf puntaje, W, A
+    cpfseq prendidos, A
+	goto nextSimon
+    goto jugador
+nextSimon
+    movf prendidos, W, A
+    addwf secuencia, W, A
+    movwf EEADR, A
+    call readEE
+    call prenderLED		; Valor esta en WREG
+    incf prendidos, F, A
+    goto simon
+jugador
+    clrf prendidos
+jugIter
+    call waitButton
+    movf prendidos, W, A
+    addwf secuencia, W, A
+    movwf EEADR, A
+    call readEE
+    cpfseq comparador, A
+	goto loose
+    incf puntaje, W, A
+    cpfseq prendidos, A
+	goto nextJugIter
+    goto nextIter
+nextJugIter
+    incf prendidos, F, A
+    goto jugIter
+nextIter
+    incf puntaje, F, A
+    movlw SECMAX
+    cpfseq prendidos, A
+	goto iter
+    goto win
+    
+win:
+    call felicidades
     return
     
-puntaje:
+loose:
+    call gameOver
+    return
+    
+prenderLED:
+    movwf LATA
+    call delay1s
+    clrf LATA
+    call delay
+    return
+    
+waitButton:
+    movlw b'11101111'
+    movwf LATB, A
+    btfss PORTB, 3, A
+	goto uno
+    btfss PORTB, 2, A
+	goto uno
+    btfss PORTB, 1, A
+	goto uno
+    btfss PORTB, 0, A
+	goto uno
+    movlw b'11011111'
+    movwf LATB, A
+    btfss PORTB, 3, A
+	goto dos
+    btfss PORTB, 2, A
+	goto dos
+    btfss PORTB, 1, A
+	goto dos
+    btfss PORTB, 0, A
+	goto dos
+    movlw b'10111111'
+    movwf LATB, A
+    btfss PORTB, 3, A
+	goto cuatro
+    btfss PORTB, 2, A
+	goto cuatro
+    btfss PORTB, 1, A
+	goto cuatro
+    btfss PORTB, 0, A
+	goto cuatro
+    movlw b'01111111'
+    movwf LATB, A
+    btfss PORTB, 3, A
+	goto ocho
+    btfss PORTB, 2, A
+	goto ocho
+    btfss PORTB, 1, A
+	goto ocho
+    btfss PORTB, 0, A
+	goto ocho
+    goto waitButton
+    
+uno:
+    movlw 1
+    movwf comparador, A
+    movwf LATA, A
+    call antirebotes
+    clrf LATA, A
+    return
+    
+dos:
+    movlw 2
+    movwf comparador, A
+    movwf LATA, A
+    call antirebotes
+    clrf LATA, A
+    return
+    
+cuatro:
+    movlw 4
+    movwf comparador, A
+    movwf LATA, A
+    call antirebotes
+    clrf LATA, A
+    return
+    
+ocho:
+    movlw 8
+    movwf comparador, A
+    movwf LATA, A
+    call antirebotes
+    clrf LATA, A
+    return
+    
+displayPuntaje:
     call antirebotes
     
     call writeLCDPuntaje
@@ -126,19 +268,24 @@ puntaje:
     
     movlw 0x14
     movwf EEADR, A
-    bcf EECON1, EEPGD, A
-    bcf EECON1, CFGS, A
-    bsf EECON1, RD, A
-    movf EEDATA, W, A
+    call readEE
     movwf reg, A
     call displayReg
     
+waitZero:
     movlw b'11011111'
     movwf LATB, A
 waitReturn
     btfss PORTB, 0, A
 	goto antirebotes
     goto waitReturn
+    
+readEE:
+    bcf EECON1, EEPGD, A
+    bcf EECON1, CFGS, A
+    bsf EECON1, RD, A
+    movf EEDATA, W, A
+    return
     
 antirebotes:
     call delay
@@ -416,6 +563,89 @@ menuLCD:
     call writeLCDPuntaje
     
     return
+    
+felicidades:
+    clrf LCDConfig
+    movlw 1
+    movwf LCDData
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig
+    movlw a'F'
+    movwf LCDData
+    call sendLCD
+    movlw a'e'
+    movwf LCDData
+    call sendLCD
+    movlw a'l'
+    movwf LCDData
+    call sendLCD
+    movlw a'i'
+    movwf LCDData
+    call sendLCD
+    movlw a'c'
+    movwf LCDData
+    call sendLCD
+    movlw a'i'
+    movwf LCDData
+    call sendLCD
+    movlw a'd'
+    movwf LCDData
+    call sendLCD
+    movlw a'a'
+    movwf LCDData
+    call sendLCD
+    movlw a'd'
+    movwf LCDData
+    call sendLCD
+    movlw a'e'
+    movwf LCDData
+    call sendLCD
+    movlw a's'
+    movwf LCDData
+    call sendLCD
+    
+    call waitZero
+    
+    return
+    
+gameOver:
+    clrf LCDConfig
+    movlw 1
+    movwf LCDData
+    call sendLCD
+    
+    movlw b'010'
+    movwf LCDConfig
+    movlw a'G'
+    movwf LCDData
+    call sendLCD
+    movlw a'a'
+    movwf LCDData
+    call sendLCD
+    movlw a'm'
+    movwf LCDData
+    call sendLCD
+    movlw a'e'
+    movwf LCDData
+    call sendLCD
+    movlw a'O'
+    movwf LCDData
+    call sendLCD
+    movlw a'v'
+    movwf LCDData
+    call sendLCD
+    movlw a'e'
+    movwf LCDData
+    call sendLCD
+    movlw a'r'
+    movwf LCDData
+    call sendLCD
+    
+    call waitZero
+    
+    return
   
 	
 delay:
@@ -429,6 +659,25 @@ loopdelay
     decfsz DCounter2, 1
     goto loopdelay
     return
+    
+rutDel incf 0x38,F,A
+    btfss STATUS,2
+	goto rutDel
+	return	
+rutDel2 call rutDel
+    incf 0x39,F,A
+    btfss STATUS,2
+	goto rutDel2
+	return
+delay1s:
+    movlw d'250'
+    movwf 0x3A,A
+rutDel3 call rutDel2
+    incf 0x3A,F,A
+    btfss STATUS,2
+	goto rutDel3
+    return
+	
     
     
     end
