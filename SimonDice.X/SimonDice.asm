@@ -205,7 +205,7 @@ ledUno:
     btfss STATUS, 2, A
 	goto ledUno
     incf count2, F, A
-    movlw 10
+    movlw 5
     cpfseq count2, A
 	goto ledUno
     return
@@ -220,7 +220,7 @@ ledDos:
     btfss STATUS, 2, A
 	goto ledDos
     incf count2, F, A
-    movlw 10
+    movlw 5
     cpfseq count2, A
 	goto ledDos
     return
@@ -235,7 +235,7 @@ ledCuatro:
     btfss STATUS, 2, A
 	goto ledCuatro
     incf count2, F, A
-    movlw 10
+    movlw 5
     cpfseq count2, A
 	goto ledCuatro
     return
@@ -251,12 +251,14 @@ ledOcho:
     btfss STATUS, 2, A
 	goto ledOcho    
     incf count2, F, A
-    movlw 10
+    movlw 5
     cpfseq count2, A
 	goto ledOcho
     return
     
 waitButton:
+    clrf count, A
+    clrf count2, A
     movlw b'11101111'
     movwf LATB, A
     btfss PORTB, 3, A
@@ -302,33 +304,29 @@ waitButton:
 uno:
     movlw 1
     movwf comparador, A
-    movwf LATA, A
-    call antirebotes
-    clrf LATA, A
+    movwf ledFlick, A
+    call ledUno
     return
     
 dos:
     movlw 2
     movwf comparador, A
-    movwf LATA, A
-    call antirebotes
-    clrf LATA, A
+    movwf ledFlick, A
+    call ledDos
     return
     
 cuatro:
     movlw 4
     movwf comparador, A
-    movwf LATA, A
-    call antirebotes
-    clrf LATA, A
+    movwf ledFlick, A
+    call ledCuatro
     return
     
 ocho:
     movlw 8
     movwf comparador, A
-    movwf LATA, A
-    call antirebotes
-    clrf LATA, A
+    movwf ledFlick, A
+    call ledOcho
     return
     
 displayPuntaje:
