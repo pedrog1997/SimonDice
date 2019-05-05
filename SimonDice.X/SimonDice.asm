@@ -98,7 +98,7 @@ waitKey:
     
 jugar:
     call antirebotes
-    
+    call score
     btfss TMR2, 0, A
 	movlw 0
     movlw 0x0A
@@ -109,6 +109,7 @@ gameloop:
     clrf prendidos, A
     call esperarSecuencia
     incf puntaje, F, A
+    call updateScore
     movlw SECMAX
     cpfseq puntaje, A
 	goto gameloop
@@ -389,6 +390,29 @@ writeLCDPuntaje:
     movlw a'e'
     movwf LCDData, A
     call sendLCD
+    
+    return
+    
+score:
+    clrf LCDConfig
+    movlw 1
+    movwf LCDData
+    call sendLCD
+    
+    call writeLCDPuntaje
+    
+    call updateScore
+    
+    return
+    
+updateScore:
+    clrf LCDConfig	
+    movlw b'10001000'
+    movwf LCDData		; Set DDRAM to 0x08
+    call sendLCD
+    
+    movff puntaje, reg
+    call displayReg
     
     return
     
