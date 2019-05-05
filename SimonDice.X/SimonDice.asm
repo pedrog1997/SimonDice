@@ -16,6 +16,7 @@ dig1 EQU 0x11
 dig0 EQU 0x12
 DCounter1 EQU 0X0C
 DCounter2 EQU 0X0D
+ 
     ; Code for software simulation
     org 0x00	    ; Reset vector 
     goto 0X1000 
@@ -72,13 +73,9 @@ main:
     movwf LCDData
     call sendLCD
     
-    
-    
     call loadEEPROM
     call configT2
 
-    
-    
 loop:
     clrf puntaje
     
@@ -112,13 +109,34 @@ gameloop:
     clrf prendidos, A
     call esperarSecuencia
     incf puntaje, F, A
-    goto gameloop
+    movlw SECMAX
+    cpfseq puntaje, A
+	goto gameloop
+    goto win
     
 win:
+    movlw 0x14
+    movwf EEADR
+    movlw SECMAX
+    movwf EEDATA
+    movlw b'00000100'
+    movwf EECON1, A
+    call writeToEE
+    
     call felicidades
     return
     
 loose:
+    movlw 0x14
+    movwf EEADR
+    call readEE
+    cpfsgt puntaje, A
+	goto over
+    movff puntaje, EEDATA
+    movlw b'00000100'
+    movwf EECON1, A
+    call writeToEE
+over
     call gameOver
     return
     
