@@ -56,6 +56,10 @@ main:
     clrf TRISD, A
     clrf LATD, A
     
+    clrf ANSELE, BANKED
+    clrf TRISE, A
+    clrf LATE, A
+    
     clrf LCDConfig			    
     movlw b'00111000'		    ; Function set for LCD
     movwf LCDData
@@ -348,23 +352,23 @@ displayReg:
 sendLCD:
     call waitLCD
     movf LCDConfig, W, A
-    movwf LATC			; Set values for RS and RW	
-    bsf LATC, 2, A		; Set enable bit
+    movwf LATE			; Set values for RS and RW	
+    bsf LATE, 2, A		; Set enable bit
     movf LCDData, W, A
     movwf LATD, A		; Load Data port
     nop
-    bcf LATC, 2, A		; Clear enable bit
+    bcf LATE, 2, A		; Clear enable bit
     return
     
 waitLCD:
     setf TRISD, A		; Change port D to input
     movlw b'001'
-    movwf LATC, A		; Set values for E, RS and RW
-    bsf LATC, 2, A		; Set enable bit
+    movwf LATE, A		; Set values for E, RS and RW
+    bsf LATE, 2, A		; Set enable bit
 waitFlag 
     btfsc PORTD, 7, A		; Checks busyflag
 	goto waitFlag
-    bcf LATC, 2, A		; Clear enable bit
+    bcf LATE, 2, A		; Clear enable bit
     clrf TRISD, A		; Change port D back to output
     return
     
