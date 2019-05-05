@@ -78,7 +78,7 @@ main:
     call sendLCD
     
     call loadEEPROM
-    call configT2
+    call configT0
 
 loop:
     clrf puntaje
@@ -103,7 +103,7 @@ waitKey:
 jugar:
     call antirebotes
     call score
-    btfss TMR2, 0, A
+    btfss TMR0L, 0, A
 	goto sec
     movlw 0x0A
     goto secu
@@ -553,9 +553,10 @@ waitWrite:
 	goto waitWrite
     return
     
-configT2:
-    clrf T2CON, A
-    bsf T2CON, TMR2ON, A
+configT0:
+    movlw b'01001000'
+    movwf T0CON, A
+    bsf T0CON, TMR0ON, A
     return
     
 menuLCD:
