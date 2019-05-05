@@ -100,9 +100,11 @@ jugar:
     call antirebotes
     call score
     btfss TMR2, 0, A
-	movlw 0
+	goto sec
     movlw 0x0A
-    movwf secuencia
+    goto secu
+sec movlw 0
+secu movwf secuencia
 gameloop:
     clrf prendidos, A
     call prenderSecuencia
@@ -157,6 +159,7 @@ prenderSig
     
 esperarSecuencia:
     call waitButton
+    call delay1s
     movf prendidos, W, A
     addwf secuencia, W, A
     movwf EEADR, A
@@ -173,7 +176,7 @@ prenderLED:
     movwf LATA
     call delay1s
     clrf LATA
-    call delay
+    call delay1s
     return
     
 waitButton:
@@ -253,6 +256,11 @@ ocho:
     
 displayPuntaje:
     call antirebotes
+    
+    clrf LCDConfig
+    movlw 1
+    movwf LCDData
+    call sendLCD
     
     call writeLCDPuntaje
     
