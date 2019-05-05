@@ -106,46 +106,13 @@ jugar:
 	movlw 0
     movlw 0x0A
     movwf secuencia
-    
-iter	
-    clrf prendidos
-simon
-    movlw 1
-    addwf puntaje, W, A
-    cpfseq prendidos, A
-	goto nextSimon
-    goto jugador
-nextSimon
-    movf prendidos, W, A
-    addwf secuencia, W, A
-    movwf EEADR, A
-    call readEE
-    call prenderLED		; Valor esta en WREG
-    incf prendidos, F, A
-    goto simon
-jugador
-    clrf prendidos
-jugIter
-    call waitButton
-    movf prendidos, W, A
-    addwf secuencia, W, A
-    movwf EEADR, A
-    call readEE
-    cpfseq comparador, A
-	goto loose
-    incf puntaje, W, A
-    cpfseq prendidos, A
-	goto nextJugIter
-    goto nextIter
-nextJugIter
-    incf prendidos, F, A
-    goto jugIter
-nextIter
+gameloop:
+    clrf prendidos, A
+    call prenderSecuencia
+    clrf prendidos, A
+    call esperarSecuencia
     incf puntaje, F, A
-    movlw SECMAX
-    cpfseq prendidos, A
-	goto iter
-    goto win
+    goto gameloop
     
 win:
     call felicidades
@@ -153,6 +120,34 @@ win:
     
 loose:
     call gameOver
+    return
+    
+prenderSecuencia:
+    incf puntaje, W, A
+    cpfseq prendidos, A
+	goto prenderSig
+    return
+prenderSig
+    movf prendidos, W, A
+    addwf secuencia, W, A
+    movwf EEADR, A
+    call readEE
+    call prenderLED
+    incf prendidos, F, A
+    goto prenderSecuencia
+    
+esperarSecuencia:
+    call waitButton
+    movf prendidos, W, A
+    addwf secuencia, W, A
+    movwf EEADR, A
+    call readEE
+    cpfseq comparador, A
+	goto loose
+    incf prendidos, F, A
+    movf puntaje, W, A
+    cpfsgt prendidos, A
+	goto esperarSecuencia
     return
     
 prenderLED:
@@ -645,7 +640,7 @@ gameOver:
     
     call waitZero
     
-    return
+    goto loop
   
 	
 delay:
