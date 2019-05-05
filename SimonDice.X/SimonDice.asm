@@ -16,6 +16,10 @@ dig1 EQU 0x11
 dig0 EQU 0x12
 DCounter1 EQU 0X0C
 DCounter2 EQU 0X0D
+delayReg EQU 0x20
+ledFlick EQU 0x21
+count EQU 0x22
+count2 EQU 0x23
  
     ; Code for software simulation
     org 0x00	    ; Reset vector 
@@ -177,10 +181,79 @@ esperarSecuencia:
     return
     
 prenderLED:
-    movwf LATA
-    call delay1s
-    clrf LATA
-    call delay1s
+    clrf count, A
+    clrf count2, A
+    movwf ledFlick, A
+    movlw 1
+    cpfsgt ledFlick, A
+	goto ledUno
+    movlw 2
+    cpfsgt ledFlick, A
+	goto ledDos
+    movlw 4
+    cpfsgt ledFlick, A
+	goto ledCuatro
+    goto ledOcho
+    
+ledUno:
+    movff ledFlick, LATA
+    bsf LATC, 0, A
+    call delayDo
+    clrf LATA, A
+    bcf LATC, 0, A
+    incf count, F, A
+    btfss STATUS, 2, A
+	goto ledUno
+    incf count2, F, A
+    movlw 10
+    cpfseq count2, A
+	goto ledUno
+    return
+    
+ledDos:
+    movff ledFlick, LATA
+    bsf LATC, 0, A
+    call delayRe
+    clrf LATA, A
+    bcf LATC, 0, A
+    incf count, F, A
+    btfss STATUS, 2, A
+	goto ledDos
+    incf count2, F, A
+    movlw 10
+    cpfseq count2, A
+	goto ledDos
+    return
+    
+ledCuatro:
+    movff ledFlick, LATA
+    bsf LATC, 0, A
+    call delayMi
+    clrf LATA, A
+    bcf LATC, 0, A
+    incf count, F, A
+    btfss STATUS, 2, A
+	goto ledCuatro
+    incf count2, F, A
+    movlw 10
+    cpfseq count2, A
+	goto ledCuatro
+    return
+    
+    
+ledOcho:
+    movff ledFlick, LATA
+    bsf LATC, 0, A
+    call delayDo
+    clrf LATA, A
+    bcf LATC, 0, A
+    incf count, F, A
+    btfss STATUS, 2, A
+	goto ledOcho    
+    incf count2, F, A
+    movlw 10
+    cpfseq count2, A
+	goto ledOcho
     return
     
 waitButton:
@@ -726,6 +799,48 @@ rutDel3 call rutDel2
     incf 0x3A,F,A
     btfss STATUS,2
 	goto rutDel3
+    return
+    
+delayDo:
+    movlw 18
+    movwf delayReg, A
+    call delayLoop
+    movlw 18
+    movwf delayReg, A
+    call delayLoop
+    return
+    
+delayRe:
+    movlw 44
+    movwf delayReg, A
+    call delayLoop
+    movlw 44
+    movwf delayReg, A
+    call delayLoop
+    return
+    
+delayMi:
+    movlw 67
+    movwf delayReg, A
+    call delayLoop
+    movlw 67
+    movwf delayReg, A
+    call delayLoop
+    return
+    
+delayFa:
+    movlw 78
+    movwf delayReg, A
+    call delayLoop
+    movlw 78
+    movwf delayReg, A
+    call delayLoop
+    return
+    
+delayLoop:
+    incf delayReg, F, A
+    btfss STATUS, 2, A
+	goto delayLoop
     return
 	
     
