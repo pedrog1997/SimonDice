@@ -162,6 +162,7 @@ prenderSig
     movwf EEADR, A
     call readEE
     call prenderLED
+    call delay
     incf prendidos, F, A
     goto prenderSecuencia
     
@@ -800,37 +801,37 @@ rutDel3 call rutDel2
     return
     
 delayDo:
-    movlw 18
+    movlw 1
     movwf delayReg, A
     call delayLoop
-    movlw 18
+    movlw 1
     movwf delayReg, A
     call delayLoop
     return
     
 delayRe:
-    movlw 44
+    movlw 64
     movwf delayReg, A
     call delayLoop
-    movlw 44
+    movlw 64
     movwf delayReg, A
     call delayLoop
     return
     
 delayMi:
-    movlw 67
+    movlw 128
     movwf delayReg, A
     call delayLoop
-    movlw 67
+    movlw 128
     movwf delayReg, A
     call delayLoop
     return
     
 delayFa:
-    movlw 78
+    movlw 192
     movwf delayReg, A
     call delayLoop
-    movlw 78
+    movlw 192
     movwf delayReg, A
     call delayLoop
     return
